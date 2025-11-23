@@ -24,10 +24,10 @@ end
 function Player.update(dt)
     local moveX, moveY = 0, 0
 
-    if love.keyboard.isDown("w") then moveY = -1; Player.facing = "up" end
-    if love.keyboard.isDown("s") then moveY = 1;  Player.facing = "down" end
-    if love.keyboard.isDown("a") then moveX = -1; Player.facing = "left" end
-    if love.keyboard.isDown("d") then moveX = 1;  Player.facing = "right" end
+    if love.keyboard.isDown("w") then moveY = -1; Player.facingDirection = "up" end
+    if love.keyboard.isDown("s") then moveY = 1;  Player.facingDirection = "down" end
+    if love.keyboard.isDown("a") then moveX = -1; Player.facingDirection = "left" end
+    if love.keyboard.isDown("d") then moveX = 1;  Player.facingDirection = "right" end
 
     -- Sprinting
     local effectiveSpeed = love.keyboard.isDown("lshift") and 260 or Player.speed
@@ -36,20 +36,24 @@ function Player.update(dt)
 end
 
 function Player.render()
+
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(Player.image, Player.x, Player.y)
+    love.graphics.setColor(1,0,0)
+    love.graphics.rectangle("fill", Player.x + 32, Player.y + 128, 5,5) -- debug square facing tile hitbox
+    love.graphics.setColor(1,1,1)
 end
 
 
 -- Get the grid tile in front of the player
 local function getFacingTile()
-    local px, py = Player.x + 32, Player.y + 64 -- feet center
+    local px, py = Player.x + 32, Player.y + 128 -- feet center
     local tx, ty = px, py
 
-    if Player.facing == 1 then ty = ty - TILE_SIZE
-    elseif Player.facing == 2 then ty = ty + TILE_SIZE
-    elseif Player.facing == 3 then tx = tx - TILE_SIZE
-    elseif Player.facing == 4 then tx = tx + TILE_SIZE
+    if Player.facingDirection == "up" then ty = ty - TILE_SIZE
+    elseif Player.facingDirection == "down" then ty = ty + TILE_SIZE
+    elseif Player.facingDirection == "left" then tx = tx - TILE_SIZE
+    elseif Player.facingDirection == "right" then tx = tx + TILE_SIZE
     end
 
     return World.getTileAt(tx, ty)
@@ -75,11 +79,10 @@ function Player.interact()
             Inventory.remove(selectedSlot.id, 1)
         end
     end
-
 end
 
 function Player.mousePressed(x,y,b)
-
+    print(Player.facingDirection)
     if Player.inInventory then return end
 
     Player.interact()
