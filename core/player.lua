@@ -2,6 +2,7 @@ local World = require("core.world")
 local Inventory = require("core.inventory")
 local Items = require("core.items")
 local Planting = require("core.planting")
+print("Player Inventory instance:", Inventory)
 
 
 local Player = {
@@ -64,11 +65,11 @@ function Player.interact()
     local tile = getFacingTile()
     if not tile then return end
 
-    local selectedItem = Inventory.getHeldItem()
-    print(selectedItem.name)
+    local held = Inventory.getHeldItem(true)
+    print("Held item is " .. held.name) --debug
     -- Example logic for hoe usage
     if selectedItem and selectedItem.type == "hoe" then
-        print("hoe hoe hoe")
+        print("hoeing")
         if tile.type == "grass" then
             tile.type = "soil"
         end
@@ -82,7 +83,7 @@ function Player.interact()
 end
 
 function Player.mousePressed(x,y,b)
-    print(Player.facingDirection)
+    print("Facing direction is " .. Player.facingDirection)
     if Player.inInventory then return end
 
     Player.interact()

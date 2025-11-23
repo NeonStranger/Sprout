@@ -16,7 +16,6 @@ Items["parsnip"] = {
     name = "Parsnip",
     description = "Freshly harvested parsnip.",
     icon = love.graphics.newImage("assets/images/parsnip.png"),
-
     type = "crop",
     stackable = true,
     maxStack = 99,

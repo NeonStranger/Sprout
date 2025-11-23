@@ -29,6 +29,8 @@ local Inventory = {
     enabled = false,
 
 }
+print("Inventory module loaded:", Inventory)
+
 function Inventory.init()
 
 end
@@ -68,7 +70,13 @@ end
 -- function Remove Iem
 
 
-function Inventory.getHeldItem()   
+function Inventory.getHeldItem(isPlayer)
+    
+    if isPlayer ~= nil then
+        print("Current slot is " .. Inventory.currentSlot) --Debug
+        --print(Items[Inventory.Slots[Inventory.currentSlot].id].name) --Debug
+    end
+
     local slot = Inventory.Slots[Inventory.currentSlot]
     if slot and slot.id then
         return Items[slot.id]
@@ -250,7 +258,7 @@ function Inventory.renderHotbar()
             local item = Items[slot.id]
             love.graphics.draw(item.icon, x, y)
             if slot.count > 1 then
-                love.graphics.print(slot.count, x + 32, y + 32)
+                love.graphics.print(slot.count, x + 32, y + 32) -- hotbar
             end
         end
 
@@ -259,15 +267,16 @@ function Inventory.renderHotbar()
 end
 
 function Inventory.render()
-local held = Inventory.getHeldItem()
 
-love.graphics.print("Held Slot: " .. tostring(Inventory.currentSlot), 10, 10)
+    local held = Inventory.getHeldItem()
 
-if held then
-    love.graphics.print("Holding: " .. held.name, 10, 30)
-else
-    love.graphics.print("Nothing held", 10, 30)
-end
+    love.graphics.print("Held Slot: " .. tostring(Inventory.currentSlot), 10, 10)
+
+    if held then
+        love.graphics.print("Holding: " .. held.name, 10, 30)
+    else
+        love.graphics.print("Nothing held", 10, 30)
+    end
 
 
     if Inventory.enabled then 

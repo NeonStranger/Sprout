@@ -3,8 +3,8 @@
 
 -- Core modules
 local WORLD = require("core.world")
-local Player = require("core.Player")
-local Inventory = require("core.Inventory")
+local Player = require("core.player")
+local Inventory = require("core.inventory")
 local PLANTING = require("core.planting")
 local TOOLS = require("core.tools")
 
