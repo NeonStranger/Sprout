@@ -6,6 +6,7 @@ print("Player Inventory instance:", Inventory)
 
 
 local Player = {
+    
     x = 100,
     y = 100,
     speed = 160,
