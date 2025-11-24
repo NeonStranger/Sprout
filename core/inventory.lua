@@ -16,6 +16,7 @@ local Inventory = {
     Slots = {
         { id = "hoe", count = 1 },
         { id = "parsnip_seed", count = 10 },
+        nil
     },              -- All inventory slots
 
     currentSlot = 1,
@@ -57,8 +58,10 @@ function Inventory.addItem(itemId, amount)
     for i = 1, Inventory.maxSlots do
         if not Inventory.Slots[i] then
             Inventory.Slots[i] = {
+
                 id = itemId,
                 count = math.min(amount, Items[itemId].maxStack)
+
             }
             amount = amount - Inventory.Slots[i].count
             if amount <= 0 then return true end
@@ -68,7 +71,24 @@ function Inventory.addItem(itemId, amount)
     return false
 end
 -- function Remove Iem
+function Inventory.subtract(slotNo, quantity)
+    -- check if slot is empty
+    if Inventory.Slots[slotNo] ~= nil then 
 
+        
+
+        local slot = Inventory.Slots[slotNo]
+        local count = slot.count
+
+        if count-quantity <= 0 then
+            Inventory.Slots[slotNo] = nil
+            return
+        end
+        Inventory.Slots[slotNo].count = count-quantity
+
+    end
+    return
+end
 
 function Inventory.getHeldItem(isPlayer)
     

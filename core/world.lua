@@ -27,11 +27,6 @@ function World.toPixel(gridX, gridY)
     return (gridX - 1) * World.tileSize, (gridY - 1) * World.tileSize
 end
 
--- Returns tile at pixel coordinate
-function World.getTileAt(px, py)
-    local gx, gy = World.toGrid(px, py)
-    return World.tiles[gx] and World.tiles[gx][gy] or nil
-end
 
 -- Returns tile at grid coordinate
 function World.getTile(gx, gy)
@@ -39,10 +34,12 @@ function World.getTile(gx, gy)
 end
 
 function World.setTile(gx, gy, tileType)
-    if World.tiles[gx] and World.tiles[gx][gy] then
-        World.tiles[gx][gy].type = tileType
+    local tile = World.getTile(gx, gy)
+    if tile then
+        tile.type = tileType
     end
 end
+
 
 function World.render()
     for x = 1, World.width do

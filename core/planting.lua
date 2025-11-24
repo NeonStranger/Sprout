@@ -3,14 +3,14 @@ local World = require("core/world")
 local Planting = {}
 
 -- Internal storage for all planted crops
-local plants = {}
+local plantedCrops = {}
 
 -- Crop definitions
-Planting.plantData = {
+Planting.cropDefinitions = {
     parsnip = {
         name = "Parsnip",
         growthTimes = {0.1, 0.11}, -- minutes per stage
-        sprites = {},              -- sprite list per growth stage
+        sprites = {love.graphics.newImage("assets/images/parsnip.png")},              -- sprite list per growth stage
         harvestItem = "parsnip",
         harvestQuantity = 2,
         regrows = false
@@ -26,15 +26,16 @@ end
 --==[ Core Logic ]==--
 
 -- Places a seed if no plant exists at that tile
-function Planting.place(seedType, ax, ay)
-    for _, plant in ipairs(plants) do
+function Planting.place(cropType, ax, ay)
+    for _, plant in ipairs(plantedCrops) do
         if plant.x == ax and plant.y == ay then
+            print("occupied")
             return false -- Tile already occupied
         end
     end
 
-    table.insert(plants, {
-        type = seedType,
+    table.insert(plantedCrops, {
+        cropType = cropType,
         x = ax,
         y = ay,
         plantedAt = love.timer.getTime(),
@@ -47,9 +48,9 @@ end
 
 -- Removes a plant at given grid position
 function Planting.removeAt(x, y)
-    for i, plant in ipairs(plants) do
+    for i, plant in ipairs(plantedCrops) do
         if plant.x == x and plant.y == y then
-            table.remove(plants, i)
+            table.remove(plantedCrops, i)
             return true
         end
     end
@@ -58,9 +59,9 @@ end
 
 -- Checks if plant at tile is fully grown
 function Planting.isGrownAt(x, y)
-    for _, plant in ipairs(plants) do
+    for _, plant in ipairs(plantedCrops) do
         if plant.x == x and plant.y == y then
-            local def = Planting.plantData[plant.type]
+            local def = Planting.cropDefinitions[plant.cropType]
             local maxStage = #def.growthTimes + 1
             return plant.stage == maxStage, plant
         end
@@ -73,10 +74,10 @@ end
 function Planting.update(dt)
     local now = love.timer.getTime()
 
-    for _, plant in ipairs(plants) do
+    for _, plant in ipairs(plantedCrops) do
         if plant.grown then goto continue end
 
-        local def = Planting.plantData[plant.type]
+        local def = Planting.cropDefinitions[plant.cropType]
         local minutesElapsed = (now - plant.plantedAt) / 60
         local newStage = plant.stage
 
@@ -102,8 +103,8 @@ end
 --==[ Rendering ]==--
 
 function Planting.render()
-    for _, plant in ipairs(plants) do
-        local def = Planting.plantData[plant.type]
+    for _, plant in ipairs(plantedCrops) do
+        local def = Planting.cropDefinitions[plant.cropType]
         local sprite = def.sprites[plant.stage]
 
         if sprite then

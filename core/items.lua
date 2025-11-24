@@ -4,6 +4,7 @@ local Items = {}
 Items["parsnip_seed"] = {
     name = "Parsnip Seeds",
     type = "seed",
+    cropType = "parsnip",
     description = "Plant these in spring. Takes 4 days.",
     icon = love.graphics.newImage("assets/images/parsnip.png"),
     stackable = true,

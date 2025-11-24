@@ -6,7 +6,7 @@ print("Player Inventory instance:", Inventory)
 
 
 local Player = {
-    
+
     x = 100,
     y = 100,
     speed = 160,
@@ -49,36 +49,45 @@ end
 
 -- Get the grid tile in front of the player
 local function getFacingTile()
-    local px, py = Player.x + 32, Player.y + 128 -- feet center
+    -- Player feet center
+    local px, py = Player.x + 32, Player.y + 128
     local tx, ty = px, py
 
-    if Player.facingDirection == "up" then ty = ty - TILE_SIZE
-    elseif Player.facingDirection == "down" then ty = ty + TILE_SIZE
-    elseif Player.facingDirection == "left" then tx = tx - TILE_SIZE
-    elseif Player.facingDirection == "right" then tx = tx + TILE_SIZE
+    if Player.facingDirection == "up" then
+        ty = ty - World.tileSize
+    elseif Player.facingDirection == "down" then
+        ty = ty + World.tileSize
+    elseif Player.facingDirection == "left" then
+        tx = tx - World.tileSize
+    elseif Player.facingDirection == "right" then
+        tx = tx + World.tileSize
     end
 
-    return World.getTileAt(tx, ty)
+    -- Convert pixel to grid coords
+    local gridX, gridY = World.toGrid(tx, ty)
+    local tile = World.getTile(gridX, gridY)
+
+    return tile, gridX, gridY
 end
 
 -- Called on left click or space
 function Player.interact()
-    local tile = getFacingTile()
+    local tile, gridX, gridY = getFacingTile()
     if not tile then return end
-
+    
     local held = Inventory.getHeldItem(true)
     print("Held item is " .. held.name) --debug
     -- Example logic for hoe usage
-    if selectedItem and selectedItem.type == "hoe" then
+    if held and held.type == "hoe" then
         print("hoeing")
         if tile.type == "grass" then
             tile.type = "soil"
         end
 
-    elseif selectedItem and selectedItem.type == "seed" and tile.type == "soil" then
-        local canPlace = Planting.place(selectedItem.id, gridX, gridY)
+    elseif held and held.type == "seed" and tile.type == "soil" then
+        local canPlace = Planting.place(held.cropType, gridX, gridY)
         if canPlace then
-            Inventory.remove(selectedSlot.id, 1)
+            Inventory.subtract(Inventory.currentSlot, 1)
         end
     end
 end
